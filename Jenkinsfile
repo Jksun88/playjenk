@@ -1,6 +1,11 @@
 pipeline {
   environment{
     NPM_CONFIG_CACHE = "${WORKSPACE}/.npm"
+    AWS_ACCOUNT_ID="284637488727"
+    AWS_DEFAULT_REGION="us-west-2" 
+    IMAGE_REPO_NAME="workbud-ms-auth" 
+    IMAGE_TAG="latest"
+    REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
   }
   agent {
     docker {
@@ -9,6 +14,20 @@ pipeline {
     }
   }
   stages {
+    stage('Logging into AWS ECR') {
+      steps {
+        script {
+          sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+        } 
+      }
+    }
+    stage('Pulling from ECR') {
+      steps{ 
+        script {
+          sh "docker pull ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+        }
+      }
+    }
     stage('install playwright'){
       steps {
         sh '''
@@ -16,11 +35,6 @@ pipeline {
           npx playwright install
           npx playwright install-deps  
         '''
-      }
-    }
-    stage('help'){
-      steps{
-        sh 'npx playwright test --help'
       }
     }
     stage('test'){
@@ -32,4 +46,3 @@ pipeline {
       }
     }
   }
-}
