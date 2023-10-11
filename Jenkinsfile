@@ -23,7 +23,7 @@ pipeline {
         }
       }
     }
-    stage('Pull playwright docker image'){
+    stage('install playwright'){
       agent {
         docker {
           image 'mcr.microsoft.com/playwright:v1.38.0-jammy'
@@ -31,13 +31,6 @@ pipeline {
           reuseNode true
         }
       } 
-      steps{
-        script{
-          sh "docker pull mcr.microsoft.com/playwright:v1.38.0-jammy"
-        }
-      }
-    }
-    stage('install playwright'){
       steps {
         sh '''
           npm i -D @playwright/test
