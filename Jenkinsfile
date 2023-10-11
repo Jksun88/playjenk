@@ -7,12 +7,7 @@ pipeline {
     IMAGE_TAG="latest"
     REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
   }
-  agent any {
-    docker {
-      image 'mcr.microsoft.com/playwright:v1.38.0-jammy'
-      args '-u root:root'
-    }
-  }
+  agent any {}
   stages {
     stage('Logging into AWS ECR') {
       steps {
