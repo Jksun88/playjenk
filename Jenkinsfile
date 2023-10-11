@@ -33,6 +33,8 @@ pipeline {
       } 
       steps {
         sh '''
+          npm cache clean --force
+          npm install
           npm i -D @types/node
           npm i -D @playwright/test
           npx playwright install
