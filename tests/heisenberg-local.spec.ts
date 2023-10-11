@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('test', async ({ page }) => {
+test('test - login page', async ({ page }) => {
   await page.goto('http://heinsenberg-inc.workbud.local/auth/login');
   await page.getByPlaceholder('Username').click();
   await page.getByPlaceholder('Username').fill('walterwhite@mailnatorcom');
