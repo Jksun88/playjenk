@@ -24,10 +24,15 @@ pipeline {
       }
     }
     stage('Pull playwright docker image'){
+      agent docker {
+        docker {
+          image 'mcr.microsoft.com/playwright:v1.38.0-jammy'
+          args '-u root:root'
+        }
+      } 
       steps{
         script{
           sh "docker pull mcr.microsoft.com/playwright:v1.38.0-jammy"
-          sh "docker run -t -d -u 115:124 -u root:root -w /var/lib/jenkins/workspace/playwright -v /var/lib/jenkins/workspace/playwright:/var/lib/jenkins/workspace/playwright:rw,z -v /var/lib/jenkins/workspace/playwright@tmp:/var/lib/jenkins/workspace/playwright@tmp:rw,z mcr.microsoft.com/playwright:v1.38.0-jammy cat"
         }
       }
     }
