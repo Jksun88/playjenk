@@ -7,7 +7,7 @@ pipeline {
     IMAGE_TAG="latest"
     REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
   }
-  agent {
+  agent any {
     docker {
       image 'mcr.microsoft.com/playwright:v1.38.0-jammy'
       args '-u root:root'
@@ -25,6 +25,14 @@ pipeline {
       steps{ 
         script {
           sh "docker pull ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+        }
+      }
+    }
+    stage('Pull playwright docker image'){
+      steps{
+        script{
+          sh "docker pull mcr.microsoft.com/playwright:v1.38.0-jammy"
+          sh "docker run -t -d -u 115:124 -u root:root -w /var/lib/jenkins/workspace/playwright -v /var/lib/jenkins/workspace/playwright:/var/lib/jenkins/workspace/playwright:rw,z -v /var/lib/jenkins/workspace/playwright@tmp:/var/lib/jenkins/workspace/playwright@tmp:rw,z mcr.microsoft.com/playwright:v1.38.0-jammy cat"
         }
       }
     }
