@@ -7,7 +7,7 @@ pipeline {
     IMAGE_TAG="latest"
     REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
   }
-  agent any 
+  agent none
   stages {
     stage('Logging into AWS ECR') {
       steps {
