@@ -7,7 +7,7 @@ pipeline {
     IMAGE_TAG="latest"
     REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
   }
-  agent none
+  agent any 
   stages {
     stage('Logging into AWS ECR') {
       steps {
@@ -23,31 +23,40 @@ pipeline {
         }
       }
     }
-      stages {
-        agent {
-          docker {
-            image 'mcr.microsoft.com/playwright:v1.38.0-jammy'
-            args '-u root:root'
-            reuseNode true
-          }
-        } 
-        stage('install playwright in container'){
-          steps {
-          sh '''
-            npm i -D @playwright/test
-            npx playwright install
-            npx playwright install-deps  
-          '''
-          }
+    stage('install playwright'){
+      agent {
+        docker {
+          image 'mcr.microsoft.com/playwright:v1.38.0-jammy'
+          args '-u root:root'
+          reuseNode true
         }
-        stage('test'){
-          steps{
-            sh '''
-              npx playwright test --list
-              npx playwright test
-            '''
-          }
-        }
+      } 
+      steps {
+        sh '''
+          npm cache clean --force
+          npm install
+          npm version
+          npm i -D @types/node
+          npm i -D @playwright/test
+          npx playwright install
+          npx playwright install-deps  
+        '''
       }
+    }
+    stage('test'){
+      agent {
+        docker {
+          image 'mcr.microsoft.com/playwright:v1.38.0-jammy'
+          args '-u root:root'
+          reuseNode true
+        }
+      } 
+      steps{
+        sh '''
+          npx playwright test --list
+          npx playwright test
+        '''
+      }
+    }
   }
 }
