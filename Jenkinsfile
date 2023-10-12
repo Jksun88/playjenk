@@ -23,7 +23,7 @@ pipeline {
         }
       }
     }
-    stages('install playwright'){
+    stages {
       agent {
         docker {
           image 'mcr.microsoft.com/playwright:v1.38.0-jammy'
