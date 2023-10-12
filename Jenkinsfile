@@ -53,6 +53,8 @@ pipeline {
       } 
       steps{
         sh '''
+          npx playwright install chromium
+          npx playwright install firefox
           npx playwright test --list
           npx playwright test
         '''
