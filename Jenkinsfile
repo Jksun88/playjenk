@@ -23,31 +23,31 @@ pipeline {
         }
       }
     }
-    stages {
-      agent {
-        docker {
-          image 'mcr.microsoft.com/playwright:v1.38.0-jammy'
-          args '-u root:root'
-          reuseNode true
-        }
-      } 
-      stage('install playwright in container'){
-        steps {
-        sh '''
-          npm i -D @playwright/test
-          npx playwright install
-          npx playwright install-deps  
-        '''
-        }
-      }
-      stage('test'){
-        steps{
+      stages {
+        agent {
+          docker {
+            image 'mcr.microsoft.com/playwright:v1.38.0-jammy'
+            args '-u root:root'
+            reuseNode true
+          }
+        } 
+        stage('install playwright in container'){
+          steps {
           sh '''
-            npx playwright test --list
-            npx playwright test
+            npm i -D @playwright/test
+            npx playwright install
+            npx playwright install-deps  
           '''
+          }
+        }
+        stage('test'){
+          steps{
+            sh '''
+              npx playwright test --list
+              npx playwright test
+            '''
+          }
         }
       }
-    }
   }
 }
